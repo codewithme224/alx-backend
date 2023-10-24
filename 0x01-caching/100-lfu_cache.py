@@ -15,6 +15,7 @@ class LFUCache(BaseCaching):
         """
         super().__init__()
         self.cache_data = OrderedDict()
+        self.keys_freq = []
 
     def __reorder_items(self, mru_key):
         """Reorders the items in the cache by frequency of use.
