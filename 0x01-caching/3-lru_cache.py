@@ -5,29 +5,33 @@ BaseCaching = __import__('base_caching').BaseCaching
 
 
 class LRUCache(BaseCaching):
-    """LRU Caching System"""
+    '''A class `LRUCache` that inherits from
+       `BaseCaching` and is a caching system
+    '''
 
     def __init__(self):
-        """Initialize LRUCaching"""
+        '''initialize the cache
+        '''
         super().__init__()
+        self.cache_data = OrderedDict()
 
     def put(self, key, item):
-        """Add an item to the cache"""
+        """Adds an item in the cache.
+        """
         if key is None or item is None:
             return
-        if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
-            least_recently_used = min(self.access_time,
-                                      key=self.access_time.get)
-            self.cache_data.pop(least_recently_used)
-            print("DISCARD: {}".format(least_recently_used))
-        self.cache_data[key] = item
-        self.access_time[key] = self.access_time_counter
-        self.access_time_counter += 1
+        if key not in self.cache_data:
+            if len(self.cache_data) + 1 > BaseCaching.MAX_ITEMS:
+                lru_key, _ = self.cache_data.popitem(True)
+                print("DISCARD:", lru_key)
+            self.cache_data[key] = item
+            self.cache_data.move_to_end(key, last=False)
+        else:
+            self.cache_data[key] = item
 
     def get(self, key):
-        """Get the value from the cache"""
-        if key is None or key not in self.cache_data:
-            return None
-        self.access_time[key] = self.access_time_counter
-        self.access_time_counter += 1
-        return self.cache_data[key]
+        """Retrieves an item by key.
+        """
+        if key is not None and key in self.cache_data:
+            self.cache_data.move_to_end(key, last=False)
+        return self.cache_data.get(key, None)
