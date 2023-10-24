@@ -2,6 +2,7 @@
 """LRU Caching System"""
 
 BaseCaching = __import__('base_caching').BaseCaching
+from collections import OrderedDict
 
 
 class LRUCache(BaseCaching):
